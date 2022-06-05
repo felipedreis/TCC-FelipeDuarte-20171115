@@ -1,0 +1,23 @@
+\select@language {brazil}
+\contentsline {figure}{\numberline {1}{\ignorespaces Ciclos de estimula\IeC {\c c}\IeC {\~a}o internos da criatura artificial. O tipo do est\IeC {\'\i }mulo emitido pelo componente est\IeC {\'a} descrito no lado esquerdo da seta. Os componentes est\IeC {\~a}o discriminados pela sua classe, segundo a legenda.\relax }}{19}{figure.caption.5}
+\contentsline {figure}{\numberline {2}{\ignorespaces Diagrama de classes do banco de dados\relax }}{23}{figure.caption.6}
+\contentsline {figure}{\numberline {3}{\ignorespaces M\IeC {\'e}dia da troca de est\IeC {\'\i }mulos no tempo para ambas as arquiteturas. Cada curva representa um tipo de est\IeC {\'\i }mulo diferente. Ambas as m\IeC {\'e}dias foram calculadas com precis\IeC {\~a}o de minutos.\relax }}{29}{figure.caption.8}
+\contentsline {figure}{\numberline {4}{\ignorespaces Gr\IeC {\'a}ficos da m\IeC {\'e}dia de escolhas acumuladas no tempo para a arquitetura Art\IeC {\'\i }fice e DL2L\relax }}{30}{figure.caption.9}
+\contentsline {figure}{\numberline {7}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 2 criaturas\relax }}{30}{figure.caption.13}
+\contentsline {figure}{\numberline {5}{\ignorespaces Gr\IeC {\'a}ficos da m\IeC {\'e}dia da efici\IeC {\^e}ncia comportamental no tempo para a arquitetura Art\IeC {\'\i }fice e DL2L\relax }}{31}{figure.caption.10}
+\contentsline {figure}{\numberline {6}{\ignorespaces Gr\IeC {\'a}ficos da m\IeC {\'e}dia da soma acumulada de nutrientes comidos no tempo\relax }}{32}{figure.caption.11}
+\contentsline {figure}{\numberline {8}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 3 criaturas\relax }}{33}{figure.caption.14}
+\contentsline {figure}{\numberline {9}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 4 criaturas\relax }}{34}{figure.caption.15}
+\contentsline {figure}{\numberline {10}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 5 criaturas\relax }}{34}{figure.caption.16}
+\contentsline {figure}{\numberline {11}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 2 \textit {holders}\relax }}{35}{figure.caption.18}
+\contentsline {figure}{\numberline {12}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 3 \textit {holders}\relax }}{36}{figure.caption.19}
+\contentsline {figure}{\numberline {13}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 4 \textit {holders}\relax }}{36}{figure.caption.20}
+\contentsline {figure}{\numberline {14}{\ignorespaces M\IeC {\'e}dia temporal dos est\IeC {\'\i }mulos trocados em simula\IeC {\c c}\IeC {\~a}o utilizando 5 \textit {holders}\relax }}{37}{figure.caption.21}
+\contentsline {figure}{\numberline {15}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 2 criaturas\relax }}{44}{figure.caption.26}
+\contentsline {figure}{\numberline {16}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 3 criaturas\relax }}{45}{figure.caption.27}
+\contentsline {figure}{\numberline {17}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 4 criaturas\relax }}{45}{figure.caption.28}
+\contentsline {figure}{\numberline {18}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 5 criaturas\relax }}{46}{figure.caption.29}
+\contentsline {figure}{\numberline {19}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 3, com 2 \textit {holders}\relax }}{46}{figure.caption.30}
+\contentsline {figure}{\numberline {20}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 3 \textit {holders}\relax }}{47}{figure.caption.31}
+\contentsline {figure}{\numberline {21}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 4 \textit {holders}\relax }}{47}{figure.caption.32}
+\contentsline {figure}{\numberline {22}{\ignorespaces Erro relativo da m\IeC {\'e}dia de est\IeC {\'\i }mulos trocados para o experimento 2, com 5 \textit {holders}\relax }}{48}{figure.caption.33}

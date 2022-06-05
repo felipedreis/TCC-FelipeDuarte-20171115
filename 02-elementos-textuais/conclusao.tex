@@ -1,0 +1,43 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./02-elementos-textuais/conclusao.tex
+% -----------------------------------------------------------------------------
+
+
+
+\chapter{Conclusão}
+\label{chap:conclusao}
+
+A proposta deste trabalho foi propor o modelo e a implementação de um simulador de vida artificial distribuído e assíncrono utilizando o modelo de atores como ferramenta construtitva. Como foi discutido na \autoref{chap:introducao}, há relevância em prover uma arquitetura deste perfil visto que é interessante estudar a modelagem de sistemas biológico em larga escala,  e as técnicas usadas frequentemente na literatura, como concorrência por \textit{threads}, são impeditivas para essa linha de pesquisa.
+
+Como \autoref{chap:fundamentacaoTeorica}, o modelo de programação concorrente baseado em \textit{threads} e memória compartilhada, padece de problemas de sincronização, como condições de corrida, \mbox{\textit{deadlocks}} e \textit{livelocks}, mas é possível evitá-los com o uso correto de \textit{locks}, assumindo que há perda de performance. O modelo de atores abre mão da possibilidade de compartilhamento de memória e adota uma operação estritamente assíncrona, baseado em troca de mensagens. Essa decisão construtiva evita esses problemas de sincronização.A implementação do modelo de atores mais desenvolvida atualmente é o \textit{Akka}, e por isso foi adotada neste trabalho. 
+
+Na área de simulação de processos biológicos, principalmente do processo cognitivo, não existem muitos projetos que pensem a modelagem em termos de sistemas distribuídos e assíncronos. No \autoref{chap:trabRelac} foram apresentados trabalhos que modelam o processo cognitivo, partindo de uma perspectiva dita biológica, mas que no fundo partem de abordagens clássicas simbolistas/conexionistas. A exceção dentre estes trabalhos é o projeto Artífice, uma arquitetura para construção de criaturas artificiais dotadas de sistema nervoso, parte da perspectiva da cognição biológica. Além do mais, este foi construído para ser um sistema multi-agentes não determinístico e assíncrono, característica não  encontrada nos outros trabalhos. Contudo o projeto padecia de problemas de escalabilidade, por ter sido construído utilizando programação concorrente baseada no compartilhamento de estado.
+
+Tendo uma arquitetura cognitiva funcional, fundamentada num arcabouço teórico amplo da modelagem do processo cognitivo, foi proposta uma nova implementação no \autoref{chap:metodologia} baseada no modelo de atores, que permitisse a simulação em ambiente distribuído. A arquitetura proposta, nomeada DL2L tem as mesmas funcionalidades básicas da arquitetura Artífice, no que diz respeito ao processo cognitivo-emocional. Um esquema de persistência foi proposto para que seja possível armazenar e recuperar posteriormente os dados da dinâmica interna e externa das criaturas. Também foi proposto um esquema de distribuição das entidades da simulação de forma que eles sejam logicamente localizáveis em um \textit{cluster}. O modelo possui um único gargalo e ponto único de falha que é a verificação de colisões, que até aqui, é feita de forma centralizada.
+
+O capítulo \autoref{chap:resultados} expõe os resultados dos experimentos preliminares. Estes serviram para avaliar a conformidade qualitativa da arquitetura proposta com a Artífice, tal como a escalabilidade vertical e horizontal do sistema. Os resultados mostraram que, a princípio ambas as arquiteturas são qualitativamente comparáveis. Contudo o projeto DL2L ainda carece de refinamentos, isso pois a tarefa de detecção de colisões parece ficar sobrecarregada quando o número de criaturas aumenta numa taxa pequena. 
+
+\section{Principais contribuições}
+
+
+Este trabalho deixa como principal contribuição uma arquitetura cognitiva multi-agente para simulação de criaturas artificiais, que opera como um sistema assíncrono distribuído. A arquitetura DL2L é qualitativamente comparável com a arquitetura Artífice, guardadas as diferenças entre os parâmetros intrínsecos e extrínsecos a criatura artificial. Do ponto de vista da engenharia de software, a primeira tem um código muito mais simples, com menos parâmetros para serem calibrados do que a segunda. Isso por que no Artífice havia uma \textit{thread} para cada componente, e era necessário calibrar parâmetros para o ambiente de execução de todas essas \textit{threads}. Na arquitetura DL2L o ambiente de execução está encapsulado pelo \textit{toolkit} Akka. 
+
+Apesar da arquitetura ainda não tornar possível o estudo de simulações de forrageamento em larga escala por sofrer de um problema de único ponto de gargalo/falha, espera-se que resolvido este problema seja possível escalar o sistema em um \textit{cluster}. 
+
+
+\section{Trabalhos futuros}
+
+Como trabalhos futuros propõe-se estudar outras maneiras de verificar a colisão em um ambiente distribuído de modo a evitar o aumento  da latência a medida que o sistema cresce. Possibilidades que podem ser exploradas a resolver esse problema: checar colisões de mais entidades ao mesmo tempo e responder todas de uma vez, evitando o aumento da quantidade de mensagens enviadas; permitir ao ator que verifica as colisões de criar outros atores que possam assumir a tarefa, aproveitando o paralelismo da máquina; alterar o esquema de alocação das entidades entre os \textit{holders}, de modo que seja possível, dada a posição da criatura, descobrir em tempo constante quais \textit{holders} tem entidades próxima a essa região. É necessário também aprimorar os mecanismos de aprendizagem, adicionando memórias de curto, médio e longo prazo e comparar os resultados com os já vistos na literatura. 
+
+
+%\section{Considerações Finais}
+%\label{sec:consideracoesFinais}
+
+%As derradeiras palavras para encerramento do seu trabalho acadêmico.
+
+
+
+% -----------------------------------------------------------------------------
+%   OBS: a norma ABNT estabelece que em qualquer tipo de trabalho acadêmico monográfico
+%   deve haver um capítulo de conclusão
+% -----------------------------------------------------------------------------

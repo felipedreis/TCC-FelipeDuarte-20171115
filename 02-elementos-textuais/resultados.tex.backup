@@ -1,0 +1,259 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./02-elementos-textuais/resultados.tex
+% -----------------------------------------------------------------------------
+
+\begin{comment}
+
+-- escrever um esquema dos experimentos que devem ser executados
+
+-- separar em seções, uma pra cada experimento, apresentar o experimento, o resultado, e discutir
+
+-- mostrar se o mecanismo funciona exatamente como esperado, para uma única criatura, as duas implementação são qualitativamente comparáveis 
+
+-- estudar mais de uma criatura, mostrando que uma tem comportamento similar a outra, 
+
+
+-- ARREFECIDA
+\end{comment}
+
+
+\chapter{Análise e Discussão dos Resultados}
+\label{chap:resultados}
+Apresentada no capítulo \autoref{chap:metodologia} a modelagem de um simulador de criaturas artificiais assíncrono e distribuído, baseado no arquitetura Artífice, é necessário validar dois aspectos do software proposto. Primeiro, no que diz respeito ao comportamento das criaturas artificiais, se ele é qualitativamente comparável com a arquitetura Artífice. O segundo aspecto a se verificar é quão escalável é o sistema, horizontal e verticalmente. Neste sentido, foram planejados três experimentos preliminares, e espera-se que seja possível 
+
+Os experimentos foram realizados no \textit{cluster} do Laboratório de Sistemas Inteligentes (LSI) do CEFET, composto de oito máquinas com processador Intel i7, 32GB de RAM e 2TB de HD. O sistema operacional utilizado é o CentOS 6, e o SLURM como escalonador de tarefas. Cada experimento foi executado 30 vezes. Esse número de repetições foi escolhido de de modo que os valores de erros relativo às médias seja aceitável.
+
+Da dinâmica externa das criaturas artificiais foram escolhidos os dados de tempo de vida, distância percorrida, nutrientes comidos. Dos resultados da dinâmica interna é importante analisar três medidas relevantes ao longo do tempo, a saber: a quantidade de estímulos trocados, a utilização dos mecanismos de aprendizagem e seleção de ação e a quantidade de presas ingeridas. A primeira delas é relevante para verificar se todos os estímulos estão sendo corretamente enviados e recebidos, e se a taxa com que eles são trocados é coerente. O segundo e terceiro aspecto dizem da adaptação e do correto funcionamento dos mecanismos de aprendizagem, se as escolhas que a criatura faz (e como ela as faz) guarda correlação com sua história de interações passadas. Dito de outro modo, é necessário saber se a criatura aprende que comer uma presa sem valor nutricional não vale a pena, que dormir quando está com fome também não vale a pena e que comer um elemento de maior valor nutricional é melhor que comer um de menor valor. 
+
+Como descrito no capitulo anterior, os dados da simulação são gravados em banco de dados relacional, e para todo evento é mantido o \textit{timestamp} (em milisegundos) em que ele aconteceu. Para calcular as médias temporais, os eventos são ordenados e agrupados pelo tempo, convertido em minutos com precisão de três casas decimais. Para cada criatura, em cada instante de tempo, a média aritimética naquele instante é calculada. O erro relativo é calculado segundo a \autoref{eq:erroRelativo}.
+
+\begin{equation}
+ \centering
+ \label{eq:erroRelativo}
+ ER(X) = Z_{\alpha}\frac{S}{\bar{X}\sqrt{n}}
+\end{equation}
+
+Onde $X$ é a amostra de tamanho $n$, $\bar{X}$ é a média amostral, $S$ é o desvio padrão amostral e $Z_{\alpha}$ é a constante para um intervalo confiança de 95\%. O erro relativo $ER(X)$ é dado em percentual e vale como uma medida da qualidade da média da amostra $X$. 
+
+Desta feita, a próxima seção apresenta os resultados de validação do modelo, contrapondo com os resultados da arquitetura Artífice para configuração semelhante. A \autoref{sec:esc_vertical} apresenta o experimento feito em uma única máquina para verificar a escalabilidade vertical do software. A \autoref{sec:esc_horizontal} apresenta os resultados do experimento executado com mais de uma máquina a fim de verificar a escalabilidade horizontal. 
+
+\section{Validação do modelo}
+\label{sec:validacao}
+Este experimento foi realizado para verificar a compatibilidade do comportamento das criaturas entre a arquitetura Artífice, que inspirou este trabalho, e a versão aqui produzida. Foi executada uma simulação de forrageamento (busca por alimento) com uma única criatura em cada arquitetura e 50 presas de três tipos diferentes totalizando 150 nutrientes, que são: maçãs vermelhas (ra), maçãs verdes (ga), e maçãs cinzas (gra). O valor nutricional $N$ em ambos os experimentos respeita a relação $N_{gra} = 0 < N_{ra} < N_{ga} $. Cada experimento foi repetido por 30 vezes. A arquitetura Artífice foi configurada com um $\Delta_{sym} = 3 \times 10^{-3}$, enquanto a arquitetura DL2L foi configurada com um $\Delta_{sym} = 1.5 \times 10^{-3}$. Esses parâmetros foram escolhidos de forma que as criaturas pudessem interagir com o mundo artificial por um tempo aceitável, sendo possível observar o seu comportamento.
+
+Para a configuração descrita a arquitetura Artífice obteve um tempo de vida médio de $12.6 \pm 9.96\%$ em minutos e comeu um número de $25.3 \pm 10\%$ presas. O teste de normalidade para o tempo de vida e presas comidas resultou em p-valores de $1.4\%$ e $3.7\%$ respectivamente, o que indica que não permite dizer que a distribuição é normal. Já a arquitetura DL2L obteve nesse experimento um tempo de vida médio de $31.4 \pm 6.79\%$ em minutos e comeu, em média, $304.2 \pm 4.35\%$ presas. O teste de normalidade para o tempo de vida e presas comidas resultou em p-valores de $48.07\%$ e $65.72\%$, o que indica que as distribuições são normais para um intervalo de confiança de $95\%$.
+
+A média temporal da troca de estímulos entre as arquiteturas está apresentada na \autoref{fig:exchgStimuli}. Vale dizer que a arquitetura DL2L tem um número menor de tipos de estímulos comparada à Artifice, e isso se deva a uma simplificação dos componentes e do fato de que nem todas as funcionalidades foram implementadas por completo. 
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_artifice/avgExchangedStimuliOverTime.png}
+        \caption{Troca de estímulos na arq. Artífice}
+        \label{fig:exchgStimuli_artifice}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_l2l/avgExchangedStimuliOverTime.png}
+        \caption{Troca de estímulos na arq. DL2L}
+        \label{fig:exchgStimuli_dl2l}
+    \end{subfigure}
+    \caption{Média da troca de estímulos no tempo para ambas as arquiteturas. Cada curva representa um tipo de estímulo diferente. Ambas as médias foram calculadas com precisão de minutos.}
+    \label{fig:exchgStimuli}
+\end{figure}
+
+A \autoref{fig:accChoices} exibe a média da soma acumulada de escolhas feitas no tempo, separadas por mecanismo. Nesta simulação foram utilizados somente os três mecanismos mais básicos: a criatura seleciona primeiro os alvos que estão à menor distância, depois seleciona a ação mais provável para cada alvo baseado na memória de condicionamento, e por fim, caso não tenha restado uma ação única, ela faz uma escolha aleatória.  
+
+\begin{figure}[h!]
+     \centering
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_artifice/accumulatedChoices.png}
+        \caption{Arquitetura Artífice}
+        \label{fig:accChoices_artifice}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_l2l/accumulatedChoices.png}
+        \caption{Arquitetura DL2L}
+        \label{fig:accChoices_dl2l}
+    \end{subfigure}
+    \caption{Gráficos da média de escolhas acumuladas no tempo para a arquitetura Artífice e DL2L}
+  \label{fig:accChoices}
+\end{figure}
+
+A eficiência comportamental da criatura artificial é uma função do máximo \textit{arousal} e da quantidade de objetos no campo sensório. Ela é calculada durante a execução da simulação e é utilizada para determinar a velocidade do passo da criatura e o foco atencional. Existem duas fórmulas para a eficiência comportamental, uma para tarefas simples, onde a decisão envolve um único objeto, e outra para tarefas complexas que envolvem mais de um objeto. A relação da eficiência comportamental em função do \textit{arousal} máximo $A$ e o número de objetos no campo sensor $N$ é apresentada na \autoref{eq:behEfficiency}. A \autoref{fig:behEfficiency} exibe a média temporal normalizada da eficiência comportamental para as duas arquiteturas.
+
+\begin{equation}
+\label{eq:behEfficiency}
+    BE(A,N) = 
+    \begin{cases}
+        16 - 16e^{-0.4A} & \text{se } N < 2\\
+        5.714A -  0.816A^2 & \text{se } N \geq 2
+    \end{cases}
+\end{equation}
+
+Para cada tipo diferente de presa a cada instante é calculado quantos nutrientes daquele tipo foram comidos, e a partir dessa série é calculada a soma acumulada. Este dado está apresentado na \autoref{fig:accNutrients} para ambas as arquiteturas.
+
+\begin{figure}
+     \centering
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_artifice/behaviouralEfficiency.png}
+        \caption{Arquitetura Artífice}
+        \label{fig:behEfficiency_artifice}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_l2l/behaviouralEfficiency.png}
+        \caption{Arquitetura DL2L}
+        \label{fig:behEfficiency_dl2l}
+    \end{subfigure}
+    \caption{Gráficos da média da eficiência comportamental no tempo para a arquitetura Artífice e DL2L}
+    \label{fig:behEfficiency}
+\end{figure}
+
+
+\begin{figure}
+     \centering
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_artifice/accumulatedNutrients.png}
+        \caption{Arquitetura Artífice}
+        \label{fig:accNutrients_artifice}
+    \end{subfigure}
+    ~
+    \begin{subfigure}[b]{1.0\textwidth}
+        \includegraphics[width=\textwidth]{04-figuras/experiments/exp_1_l2l/accumulatedNutrients.png}
+        \caption{Arquitetura DL2L}
+        \label{fig:accNutrients_dl2l}
+    \end{subfigure}
+    \caption{Gráficos da média da soma acumulada de nutrientes comidos no tempo}
+    \label{fig:accNutrients}
+\end{figure}
+
+\section{Escalabilidade vertical}
+\label{sec:esc_vertical}
+
+A fim de verificar a influência de mais de uma criatura em um mesmo \textit{holder} na arquitetura DL2L, foi planejado este segundo experimento.Foram executadas cinco configurações diferentes, iniciando com uma criatura em um nó até cinco criaturas em um nó. Cada configuração é repetida 30 vezes para garantir o mínimo de confiabilidade estatística. A densidade do mundo é mantida constante entre as configurações, iniciando em 50 presas de cada tipo (assim como no experimento anterior) em um mundo de $4.8 \times 10^{5}$ pixeis. 
+
+A \autoref{tab:resumo_exp2} expõe os resultados da média de tempo de vida, distância percorrida e nutrientes comidos. O erro foi calculado de acordo com a \autoref{eq:erroRelativo}.
+
+\begin{table}[b!]
+\centering
+\caption{Média do tempo de vida, distância percorrida e nutrientes comidos para o experimento 2}
+\begin{tabular}{ccccccc}
+\hline
+\multirow{2}{*}{Criaturas} & \multicolumn{2}{c}{ Tempo de vida } & \multicolumn{2}{c}{ Distância percorrida } & \multicolumn{2}{c}{ Nutrientes comidos } \\
+& Média & ER (\%) & Média & ER (\%) & Média & ER (\%) \\
+\hline
+1 & 31.40 & 6.79 & 2.72E+05 & 9.33 & 304.20 & 4.35 \\
+2 & 21.71 & 8.43 & 1.83E+05 & 10.39 & 189.82 & 7.61 \\
+3 & 18.81 & 7.24 & 1.30E+05 & 9.90 & 115.38 & 7.79 \\
+4 & 13.51 & 6.99 & 9.59E+04 & 9.20 & 62.73 & 8.77 \\
+5 & 10.38 & 4.73 & 5.43E+04 & 7.39 & 31.24 & 8.97 \\
+\hline
+\end{tabular}
+\label{tab:resumo_exp2}
+\end{table}
+
+Os resultados para a média de estímulos trocados no tempo para cada configuração está apresentada nas figuras \ref{fig:exp_1_l2l}, \ref{fig:exp_2_2_exchgStimuli}, \ref{exp_2_3_exchgStimuli}, \ref{fig:exp_2_4_exchgStimuli} e \ref{fig:exp_2_5_exchgStimuli}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_2/2/avgExchangedStimuliOverTime.png} 
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 2 criaturas}
+  \label{fig:exp_2_2_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_2/3/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 3 criaturas}
+  \label{fig:exp_2_3_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_2/4/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 4 criaturas}
+  \label{fig:exp_2_4_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_2/5/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 5 criaturas}
+  \label{fig:exp_2_5_exchgStimuli}
+\end{figure}
+
+\section{Escalabilidade horizontal}
+\label{sec:esc_horizontal}
+
+Este experimento foi executado com intuito de verificar a influência de mais de um \textit{holder} em uma simulação de forrageamento. Foram executadas cinco configurações diferentes, começando com um \textit{holder} até cinco. Foi mantido o número de uma criatura por nó, e a densidade do mundo foi mantida constante, iniciando com 50 nutrientes de cada tipo em um mundo de $4.8 \times 10^{5}$ pixeis.
+
+Na \autoref{tab:resumo_exp3} estão apresentados os resultados da média de tempo de vida, distância percorrida e nutrientes comidos. O erro foi calculado de acordo com a \autoref{eq:erroRelativo}. É notável que a medida que o número de holders aumenta, há uma diminuiçao em todas as médias. 
+
+\begin{table}[H]
+\centering
+\caption{Média do tempo de vida, distância percorrida e nutrientes comidos para o experimento 3}
+\begin{tabular}{ccccccc}
+\hline
+\multirow{2}{*}{Criaturas} & \multicolumn{2}{c}{ Tempo de vida (min.) } & \multicolumn{2}{c}{ Distância percorrida } & \multicolumn{2}{c}{ Nutrientes comidos } \\
+& Média & Erro (\%) & Média & Erro (\%) & Média & Erro (\%) \\
+\hline
+1 & 31.40 & 6.79 & 2.72E+05 & 9.33 & 304.20 & 4.35 \\
+2 & 24.69 & 8.69 & 2.24E+05 & 11.27 & 229.36 & 7.03 \\
+3 & 16.85 & 6.74 & 1.64E+05 & 7.31 & 121.67 & 6.21 \\
+4 & 6.75 & 5.93 & 7.06E+04 & 6.63 & 38.03 & 6.60 \\
+5 & 4.82 & 3.75 & 4.93E+04 & 4.41 & 15.83 & 7.44 \\
+\hline
+\end{tabular}
+\label{tab:resumo_exp3}
+\end{table}
+
+Dos resultados da dinâmica interna não houve alteração significativa, com exeção da média de estimulos trocados no tempo. Para cada experimento estão apresentados os resultados abaixo, salvo o experimento com um holder, cujo resultado é o mesmo apresentado na \autoref{fig:exchgStimuli_dl2l}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_3/2/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 2 \textit{holders}}
+  \label{fig:exp_3_2_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_3/3/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 3 \textit{holders}}
+  \label{fig:exp_3_3_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_3/4/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 4 \textit{holders}}
+  \label{fig:exp_3_4_exchgStimuli}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{04-figuras/experiments/exp_3/5/avgExchangedStimuliOverTime.png}
+  \caption{Média temporal dos estímulos trocados em simulação utilizando 5 \textit{holders}}
+  \label{fig:exp_3_5_exchgStimuli}
+\end{figure}
+
+A medida que o tempo evolui e as criaturas morrem o erro relativo aumenta, e os dados próximos ao final do eixo temporal não tem confiabilidade estatística. Os gráficos da evolução do erro relativo no tempo estão apresentados no \autoref{chap:apErroExp3}.
+
+\section{Síntese dos resultados}
+
+%% exp 1
+A respeito do primeiro experimento, não é possível fazer uma comparação direta entre as duas arquiteturas pois há uma mudança de parâmetro que foi justificada pelo tempo de execução dos experimentos. As dinâmica interna da criatura é extremamente sensível ao $\Delta_{sym}$, e um decremento de centésimos pode aumentar o tempo de vida em horas. Entretanto,  qualitativamente o comportamento das criaturas é parecido, principalmente no que diz respeito a dinâmica interna. Por exemplo, na \autoref{fig:accChoices} é possível ver que o estímulo que tem a maior média temporal é o que o proprioceptivo, cuja origem é dos componentes sensores. 
+
+No uso dos mecanismos de escolha há uma discrepância entre as arquiteturas, enquanto na \autoref{fig:accChoices_artifice} as escolhas aleatórias praticamente acompanham as escolhas por \textit{affordances}, na \autoref{fig:accChoices_dl2l} as escolhas aleatórias estabilizam muito abaixo do outro mecanismo. Para explicar esse comportamento pode-se levantar uma hipotese sobre a velocidade e quantidade de estímulos que são recebidos e tratados pelos componentes simultaneamente. No Artífice, os componentes do sistema nervoso são escalonados para tratar estímulos à uma taxa fixa, o que leva a uma acumulação de estímulos no \textit{buffer} compartilhado por eles. Já a arquitetura DL2L tem um caráter reativo, \textit{i.e.}, os componentes reagem somente na presença de estímulo, que não tem uma frequência fixa, com exceção dos estímulos enviados pelo \textit{PartialAppraisal}. Portanto, tão logo um componente recebe um estímulo, ele é escalonado para tratá-lo. Isso diminuí o número de estímulos simultâneos, o que reduz o número de \textit{affordances} que a criatura precisa escolher possibilitando uma desambiguação mais efetiva, diminuindo o número de escolhas aleatórias. 
+
+% exp 2
+A partir dos resultados do segundo experimento (\autoref{tab:resumo_exp2}) pode-se observar uma diminuição do tempo de vida, da distância percorrida, e do número de presas comidas. Pelos gráficos da média de estímulos trocados no tempo (Figuras \ref{fig:exp_2_2_exchgStimuli}, \ref{fig:exp_2_3_exchgStimuli}, \ref{fig:exp_2_4_exchgStimuli} e \ref{fig:exp_2_5_exchgStimuli}) é possível observar também uma diminuição de praticamente todos os tipos de estímulos. Posto que a densidade do mundo permanece constante, há reposição de nutrientes durante a simulação, as criaturas não interagem entre sí e por isso são independentes, e a configuração das máquinas é a mesma para todas as simulações, a única mudança entre as configurações é a quantidade de atores que executam sobre a mesma máquina. 
+
+Partindo destes fatos e de que o componente \textit{PartialAppraisal} do SNC é o único componente que funciona à uma taxa fixa e é responsável por manter o metabolismo da criatura em funcionamento, é possível formular a seguinte hipótesse sobre a diminuição do tempo de vida e o arrefecimento da troca de estímulos: os componentes são escalonados com uma menor frequência, tratando um numero menor de estímulos, não havendo tempo hábil para que o sistema nervoso equilibre a dinâmica interna, levando as criaturas ao obito mais rapidamente. Um segundo fator que provavelmente influencia na diminuição do tempo de vida médio da simulação é a sobrecarga do detector de colisões, que tem que tratar e enviar um número maior de mensagens, o que aumenta a latência entre a criatura atualizar sua posição no colisor e receber suas novas colisões.
+
+% exp 3
+No terceiro experimento é possível observar um fenômeno semelhante ao do segundo: as médias de tempo de vida, nutrientes comidos e distância percorrida diminuem a medida que aumenta o número de holders (\autoref{resumo_exp3}). Especialmente nas últimas configurações o tempo de vida diminuí drásticamente comparado ao experimento anterior. Ao olhar para a troca de estímulos ao longo do tempo (Figuras \ref{fig:exp_3_2_exchgStimuli}, \ref{fig:exp_3_3_exchgStimuli}, \ref{fig:exp_3_4_exchgStimuli} e \ref{fig:exp_3_5_exchgStimuli}) não há evidência qualitativa de que a maioria deles está diminuíndo, salvo os estímulos visuais. Como as criaturas não competem por recursos na mesma máquina, só há o gargalo do detector de colisões, o que explica a diminuição desses estímulos. Como o ritmo da dinâmica continua o mesmo, somente a percepção do mundo fica mais lenta, é natural que as criaturas morram mais rapidamente.
+
+Como dito antes, os resultados descritos acima foram preliminares, e para validar as hipóteses levantadas é necessário propor um novo conjunto de experimentos. Adiante, segue a conclusão deste trabalho, que retomará os objetivos iniciais, as principais contribuições e apontará trabalhos futuros.
+

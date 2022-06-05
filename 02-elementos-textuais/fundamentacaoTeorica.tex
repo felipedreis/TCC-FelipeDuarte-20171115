@@ -1,0 +1,138 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./02-elementos-textuais/fundamentacaoTeorica.tex
+% -----------------------------------------------------------------------------
+
+\chapter{Fundamentação Teórica}
+\label{chap:fundamentacaoTeorica}
+
+Neste capítulo serão apresentados conceitos pertinentes para a compreensão do presente trabalho. A \autoref{sec:concorrencia} apresenta os fundamentos de controle de concorrência usando o modelo de \textit{threads}. A \autoref{sec:atores} apresenta o modelo de atores e uma de suas implementações, provendo exemplos que explicam como são eliminados os problemas existentes no clássico de concorrência.
+
+\section{Concorrência usando threads}
+\label{sec:concorrencia}
+
+Programação concorrente surge na década de 70 com a necessidade de sistemas operacionais executarem vários processos ao mesmo tempo, e seu desenvolvimento ao longo dos anos teve o objetivo de produzir sistemas mais confiáveis \cite{Hansen2013}. Com ele muitos problemas de pesquisa surgiram, foram abordados e solucionados. Atualmente a maioria das linguagens de programação tem mecanismos consolidados que partiram desse desenvolvimento.
+
+Assim como em um sistema operacional em que muitos processos podem executar concorrentemente, dentro de um mesmo processo várias linhas de execução, doravante \textit{threads}, podem executar ao mesmo tempo. O uso de programação concorrente é fundamental atualmente para fazer uso das arquiteturas \textit{multi-core} modernas. A diferença fundamental entre \textit{threads} é que as primeiras compartilham o mesmo espaço de endereçamento, \textit{i.e.} elas tem acesso às mesmas variáveis e podem executar operações de leitura e escrita nelas simultaneamente. O acesso concorrente a posições na memória compartilhadas sem o devido  controle pode causar problemas a execução de programas \textit{multi-thread}, uma vez que o escalonamento das \textit{threads} é não-determinístico. Os principais problemas que tem de ser controlados são \textit{deadlocks}, \textit{starvation}, e condições de corrida.
+
+Uma \textbf{condição de corrida} acontece quando duas threads entram em uma \textbf{seção crítica} e executam ao mesmo tempo uma operação em memória produzindo um estado inválido. Uma \textbf{seção crítica} é um trecho de código em que a execução de mais de uma \textit{thread} não deve ser permitida \cite[p. 206]{Silberschatz2012}. O \autoref{lst:corrida} mostra um exemplo de código em C que pode exibir um problema de condição de corrida. 
+
+\begin{lstlisting}[language=c,label={lst:corrida},caption={Exemplo de programa \textit{multithread} em C onde ocorre uma condição de corrida}]
+#include <pthread.h>
+#include <stdio.h>
+
+int cont;
+
+void* inc(void* n) {
+    cont = cont + 1;
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[3];
+    cont = 0;
+    for (int i = 0; i < 3; ++i)
+        pthread_create(&threads[i], NULL, &inc, NULL);
+    for (int  i = 0; i < 3; ++i)
+        pthread_join(threads[i], NULL);
+        
+    printf("%d\n", cont);
+    return 0;
+}
+\end{lstlisting}
+
+O programa cria três \textit{threads} na linha quinze que executam a função que está definida na linha 6. Essa função simplesmente incrementa o contador global \textbf{cont}. O programa espera todas as \textit{threads} terminarem na linha 17 e exibe o resultado na linha 19. A depender da ordem que os comandos são executados, o resultado final do contador pode não ser igual ao número de \textit{threads} que executaram. A lista abaixo exibe uma ordem das \textit{threads} executadas para \autoref{lst:corrida} que produz o valor final 2 enquanto o esperado seria 3:
+
+\begin{enumerate}
+ \item A \textit{thread} 1 lê o valor 0 da variável cont da memória principal
+ \item A \textit{thread} 2 lê o valor 0 da variável cont da memória principal
+ \item Ambas as \textit{threads} 1 e 2 executam o incremento produzindo o valor 1
+ \item A \textit{thread} 1 escreve 1 na variável cont
+ \item A \textit{thread} 2 escreve 1 na variável cont
+ \item A \textit{thread} 3 executa produzindo o valor 2 na variável cont
+\end{enumerate}
+
+Esse problema de ordenação dos comandos pode ser resolvido com uma primitiva de sincronização chamada semáforo binário, ou \textit{mutex}. Essa estrutura controla o acesso à seção crítica, permitindo apenas uma \textit{thread} acessá-la por vez. Se uma segunda \textit{thread} tenta fazer o acesso enquanto primeira está executando a seção crítica, aquela é posta em estado de espera até que o \textit{mutex} seja liberado. 
+
+Quando uma \textit{thread} entra na seção crítica ela deve garantidamente deixar a seção crítica em algum momento, caso contrário as outras \textit{threads} que tentarem acessar a região podem ficar em \textit{\textbf{deadlock}}, \textit{i.e.}, esperando por um recurso que jamais será liberado \cite[p. 217]{Silberschatz2012}. Esse problema pode acontecer quando duas \textit{threads} precisam bloquear dois recursos A e B ao mesmo tempo para poderem executar, mas uma \textit{thread} bloqueou o recurso A e outra bloqueou o recurso B. Este problema pode ser resolvido checando antes, ao conseguir bloquear o primeiro recurso, se o segundo está liberado. Se não estiver, desbloqueia-se o primeiro e entra-se em estado de espera até que ambos sejam liberados.
+
+Ainda segundo \citeonline{Silberschatz2012}, \textbf{\textit{starvation}} é um problema semelhante à \textit{deadlocks} no sentido de que uma \textit{thread} fica esperando por tempo indeterminado por um recurso por nunca ser escalonada. Esse problema é mais raro mas pode acontecer quando o escalonamento é prioritário e uma das \textit{threads} sempre perde prioridade para as demais. 
+
+Como visto, o modelo de programação concorrente usando estado compartilhado pode ser problemático se o controle de concorrência não for feito adequadamente utilizando as primitivas de sincronização. Ainda assim, depurar esse tipo de problema pode ser trabalhoso pois o escalonador das \textit{threads} é geralmente não-determinístico e seria necessário reproduzir o mesmo estado da memória e a mesma ordem de execução dos comandos para produzir o erro esperado. 
+
+O modelo que utiliza compartilhamento de memória é inadequando quando se pensa em sistemas escaláveis, tanto horizontal quanto verticalmente. Por \textbf{escalabilidade vertical} se entende a capacidade de um sistema de utilizar eficientemente todos os recursos de uma única máquina. Em outras palavras, quanto melhor a configuração da máquina, melhor o desempenho do sistema. Por \textbf{escalabilidade horizontal} se entende a capacidade de um sistema de aproveitar ao máximo a quantidade de máquinas disponíveis na rede \cite{Abbadi2011}. 
+
+A escalabilidade vertical do sistemas em memória compartilhada fica comprometida porque, ainda que uma máquina tenha muitos processadores, as \textit{threads} competem  pelos mesmos recursos e bloqueiam a execução uma da outra, impedindo o estado do programa de avançar. O modelo de \textit{threads} também não oferece nenhum mecanismo nativo para que uma \textit{thread} se comunique com uma outra que esteja em outra máquina; para que isso aconteça é necessário implementar a comunicação usando \textit{sockets} ou invocação remota de método (RMI), o que dificulta o projeto de um sistema distribuído e escalável baseado em \textit{threads}. 
+
+Eliminando a necessidade de compartilhamento de estado é possível chegar a um novo modelo de concorrência mais escalável que funciona somente por troca de mensagens, que é objeto da próxima seção.
+
+\section{Modelo de atores}
+\label{sec:atores}
+
+O modelo de atores é uma alternativa ao modelo clássico de programação concorrente \cite{Agha1985}. Foi proposto por \citeonline{Hewitt1973} como um formalismo para modelar softwares inteligentes, baseado em uma única unidade computacional. Essa unidade, os \textbf{atores}, são uma primitiva universal da computação digital que se comunicam por troca de mensagens. 
+
+Um ator é uma entidade computacional isolada e deve ser capaz de criar outros atores, mudar seu estado interno e enviar mensagens a outros atores \cite{Hewitt2010}. No que diz respeito às mensagens, não há nenhuma restrição sobre seu tamanho, conteúdo ou conjunto de símbolos que a compõe. A única restrição sobre elas é que sejam um conjunto de dados tipado. O ator é isolado no sentido de que não compartilha estado com outros atores e toda comunicação é feita, a principio, por troca de mensagens assíncrona. Essa característica intrínseca do modelo de atores implica na não existência de condições de corrida, e por isso, não existem semáforos nem primitivas de sincronização no modelo.
+
+Os modelos clássicos de computação, como o de Turing e o \textit{lambda-calculus} são casos particulares do modelo de atores\cite{Hewitt2013}. Quando o modelo de atores foi proposto, algumas linguagens implementaram seus princípios como a PLANNER \cite{Hewitt1973}. Atualmente existem implementações em linguagens mais modernas como Erlang, Scala, Java e C\# e que tem tido, inclusive, uso comercial.
+
+Existem outros modelos de programação baseado em troca de mensagens como por exemplo MPI \cite{Gropp1996}, voltados para aplicações mais específicas. O modelo de atores se difere deles por ser uma abstração, e não exige a existência de \textit{threads}, \textit{mailboxes}, fila de mensagens, \textit{brokers}, etc. Com isso, várias aplicações podem ser modeladas e interpretadas a partir dele, como por exemplo serviços de e-mail, podendo ser inclusive implementado diretamente no hardware. 
+
+\subsection{Scala e Java}
+A linguagem Scala começou a ser desenvolvida entre os anos de 2001 e 2004 no Laboratório de Métodos de Programação da EPFL com o intuito de prover
+uma linguagem de programação de tipagem estática, puramente orientada a objetos, funcional e que facilitasse o desenvolvimento de componentes de software reutilizáveis \cite{Odersky2004}. Neste sentido o modelo de atores foi incorporado à linguagem como mecanismo de concorrência padrão por ser mais escalável que o modelo tradicional baseado em \textit{threads}, uma propriedade desejável no design da linguagem.
+
+Na versão 2.11.0 da linguagem, a implementação do modelo de atores padrão que passa a ser utilizada é a Akka~
+\footnote{http://docs.scala-lang.org/overviews/core/actors-migration-guide.html} enquanto a anterior foi marcada como \textit{deprecated}. Comparada com a implementação anterior na biblioteca padrão da linguagem Scala, a biblioteca Akka tem a vantagem de ter sido escrita não só para Scala como também para Java, o que não acontecia na primeira. É, além disso uma ferramenta mais consolidada no mercado, já utilizada por algumas empresas de tecnologia. Como ambas as implementações de Akka (em Scala e Java) só diferem em termos sintáticos das linguagens e são completamente compatíveis, aqui serão exibidos somente exemplos em Java.
+
+Para criar um ator em Java utilizando o toolkit Akka é necessário extender a classe \textbf{UntypedActor}. Essa classe obriga o programador a implementar o método \textit{\textbf{onReceive()}}, que recebe um parâmetro do tipo \textbf{Object} e não tem retorno. Dentro desse método o ator deve tratar e responder a mensagem que recebeu. O \autoref{lst:akkaActor} exibe uma simples implementação que responde a uma \textbf{String} com uma mensagem de boas vindas.
+
+\begin{lstlisting}[language=Java,label={lst:akkaActor}, caption={Classe que define o comportamento de um ator}]
+import akka.actor.UntypedActor;
+
+public class AtorBoasVindas extends UntypedActor {
+
+    public void onReceive(Object msg) {
+        if (msg instanceof String)     
+            sender().tell("Seja bem vindo " + ((String) msg) + "\n");
+    }
+}
+\end{lstlisting}
+
+Todo ator ao receber uma mensagem, trata-a de forma serial, e não compartilha memória com nenhum outro ator, portanto não existem condições de corrida se as premissas do modelo forem respeitadas. Evidentemente, dois atores podem estar executando \textit{\textbf{onReceive()}} ao mesmo tempo, isso depende do tipo de escalonamento, do número de \textit{threads} disponíveis e do número de atores prontos para tratarem uma mensagem. 
+
+Para criar um ator não se usa o construtor da classe: ele deve ser criado dentro do sistema de atores onde será encapsulado, receberá uma \textit{mailbox} e será gerenciado pelo escalonador quando precisar ser executado. A \autoref{lst:criaAtor} exibe a forma correta de criar um sistema de atores  e interagir com o ator.
+
+\begin{lstlisting}[language=Java,label={lst:criaAtor}, caption={Programa principal que cria um sistema de atores e instancia um ator}]
+import akka.actor.ActorSystem;
+import akka.actor.ActorRef;
+
+public class Exemplo1 {
+    public static void main(String [] args) {
+        ActorSystem system = ActorSystem.create("teste");
+        ActorRef  ator = system.actorFor(Props.create(AtorBoasVindas.class),"boasVindas");
+        
+        ator.tell("Felipe", ActorRef.noSender());
+    }
+}
+
+\end{lstlisting}
+
+Este programa deve criar um ator (linha 7) dentro do sistema de atores fornecido pelo toolkit Akka (linha 6) e enviar uma mensagem para ele (linha 9). A chamada ao método \textit{\textbf{tell()}} é assíncrona, \textit{i.e.}, ela retorna antes da mensagem ser tratada. Todo ator possui uma \textit{mailbox} onde as mensagens são enfileiradas para serem tratadas quando o ator for escalonado. Objetos do tipo \textbf{ActorRef} encapsulam o comportamento de todos os atores do sistema e todas as mensagens passadas para um ator são passadas por cópia em detrimento de passagem por referência, garantindo que um ator não compartilhe memória com seu remetente. 
+
+Os atores estão disponíveis sob um caminho lógico que os torna acessíveis a partir de outras instâncias do sistema (a saber, outros processos que podem, inclusive, estar executando em outra máquina na rede). O caminho é estruturado da seguinte maneira: 
+
+\begin{lstlisting}[caption={Esquema da URI de um ator }]
+ protocolo://nomeSistema[@host:porta]/user/nomeAtor 
+\end{lstlisting}
+
+Os caminhos lógicos de Akka seguem o padrão URI (Unified Resource Identification). O protocolo para acessar atores remotos deve ser "akka.tcp", caso o ator esteja na mesma máquina o protocolo é somente "akka" e não é necessário especificar o \textit{host} e a porta. Os atores criados pelo programador estão sempre abaixo do ator ``user`` que os supervisiona. Caso o ator do \autoref{lst:akkaActor} criasse um outro ator chamado "subAtor", sua URI seria "akka://teste/user/boasVindas/subAtor".
+
+É importante também descrever a semântica de entrega das mensagens que segue a regra \textit{at-most-once}, ou seja, a mensagem será entregue, no máximo, uma vez ao ator. Isso implica em não garantia da entrega das mensagens. De acordo com a documentação do \textit{toolkit}, essa semântica foi escolhida por ser de simples implementação, pode ser usada de forma assíncrona sem manter estado das mensagens enviadas, e possui melhor desempenho comparado com outras alternativas (\textit{at-least-once} e \textit{exactly-once})\footnote{https://doc.akka.io/docs/akka/current/general/message-delivery-reliability.html}. As mensagens trocadas diretamente entre pares de atores são entregues em ordem, \textit{e.g.} se um ator A1 enviar as mensagens M1, M2 e M3 ao ator A2, se M1 chegar ao destino, chegará antes de M2; se M2 chegar ao destino chegará antes de M3. Esse último atributo é particular da implementação de Akka e não é comum ser encontrado em outras implementações.  
+
+Por fim, o modelo de atores elimina os problemas de concorrência em sistemas não triviais permitindo ao software ganhar escalabilidade vertical e horizontal. A implementação de Akka oferece um sistema que encapsula a referência dos atores, permite transparência de localidade através dos \textit{paths}, e um sistema de comunicação que apesar de não garantir a entrega, fornece alto desempenho. Por não compartilharem estado, testar cada ator separadamente é mais fácil que testar \textit{threads} separadamente. Entretanto, para construir um sistema utilizando o paradigma de atores é necessário repensar toda a arquitetura de software.  Não basta eliminar os pontos de acesso compartilhado e substituir por troca de mensagem, é necessário pensar em um software que não tem garantias de entrega das mensagens, completamente assíncrono, e que seja tolerante a falhas.
+
+\section{Considerações finais}
+Duas técnicas de programação concorrente foram apresentadas neste capítulo, apontando vantagens e desvantagens. Programação baseada em \textit{threads} e compartilhamento de estado se mostrou ao longo da história um modo de se produzir sistemas confiáveis, apesar dos problemas de sincronização. Ferramentas e técnicas foram desenvolvidas para tratar esses problemas, entre elas semáforos, \textit{mutex} e algoritmos clássicos de sincronização. 
+
+O modelo de atores surge na mesma época que o de \textit{threads} mas só ganha popularidade recentemente com os sistemas \textit{web} em larga escala, e a publicação do manifesto reativo \footnote{Teve sua segunda versão publicada em 2014 e é um documento já assinado por milhares de desenvolvedores que estabelece quatro características de sistemas reativos: responsividade, resiliência, elasticidade e comunicação através de mensagens assíncronas. Mais informações podem ser encontradas no link https://www.reactivemanifesto.org/pt}. Esse modelo estabelece a comunicação pela troca de mensagens assíncronas e abre mão do uso de memória compartilhada, possibilitando que os sistemas escalem vertical e horizontalmente. 
+
+Um modelo assíncrono de programação, além de trazer ganhos de desempenho computacional à construção de softwares complexos, parece ter uma conformidade com a modelagem de alguns processos biológicos \cite{Strombom2017, Fisher2008, Wang2016}, maior que modelos síncronos e bloqueantes. Neste sentido o próximo capítulo lista alguns modelos do processo cognitivo apresentando suas bases teóricas, o seu funcionamento em alto nível, e quando possível, o ferramental tecnológico utilizado. Adiante é apresentada uma alternativa para construção de um simulador do processo cognitivo baseado no modelo de atores.

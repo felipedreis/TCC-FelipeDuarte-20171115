@@ -1,0 +1,87 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./02-elementos-textuais/trabalhosRelacionados.tex
+% -----------------------------------------------------------------------------
+
+\chapter{Trabalhos Relacionados}
+\label{chap:trabRelac}
+
+\begin{comment}
+-- falar da literatura do sistemas cognitivos
+    -- blue brain
+    
+    -- é melhor classificar o  trabalho com base no trabalho na compreensão do processo cognitivo e não na tecnologia
+    
+    -- lida baseado inteiramente numa teoria simbolista 
+    -- buscar uma critica da teoria do workspace global
+    
+    -- Clarion 
+    
+-- falar da literatura de sistemas multi-agentes
+    -- apresentar cada um deles: por exemplo, modelar propagação de doenças, forrageamento ótimo, 
+    no entando o mundo não é regido por um modelo e portanto no mundo real as criaturasnão levam em conta o que é ótimo e nem tem conhecimento de todas as variaveis. Elas vão a cada instante interagindo com o ambiente, e a partir do estado interno, ela seleciona o que fazer e a ação pode ser benefica, ou não.
+    
+-- relacionar e criticar as duas
+\end{comment}
+
+Durante o desenvolvimento deste trabalho não foi encontrado na literatura nenhuma arquitetura ou sistema multi-agente, que modele o processo cognitivo, e que execute de modo distribuído. \citeonline{Duch2008} apresenta algumas arquiteturas reconhecidas na literatura e as classifica em três categorias: simbólicas, emergentes ou híbridas. O autor também distingue as arquiteturas em  seus dois principais componentes, a saber, o de memória e o mecanismo de aprendizagem. A classificação oferecida por \citeonline{Duch2008} padece de problemas, uma vez que o olhar é voltado somente ao arcabouço tecnológico utilizado, e não diz respeito à abordagem teórica do processo cognitivo. 
+
+Arquiteturas simbólicas são baseadas no processamento de um sistema de símbolos de alto nível, e são construídas por uma abordagem \textit{top-down}. As emergentes tem fundamento conexionista, \textit{i.e.}, partem de uma abordagem \textit{bottom-up} e são baseadas em redes neurais. Nesta abordagem espera-se que os fenômenos cognitivos emerjam da interação entre os componentes de uma rede neural. A última classificação proposta pelo autor combina características de ambas as anteriores. 
+
+Apesar do presente trabalho se orientar segundo uma abordagem cognitiva situada (ou incorporada) \cite{Santos2004} e não se enquadrar em nenhuma das classificações propostas por \citeonline{Duch2008}, os trabalhos que mais se aproximam da proposta deste são aqueles classificados como híbridos. Os principais modelos híbridos são o LIDA e CLARION. Eles serão descritos nas próximas seções, apresentando os principais pressupostos filosóficos que fundamentam sua construção, e com qual finalidade foram pensados. A seguir será apresentada a arquitetura Artífice que construiu um arcabouço teórico em torno da teoria situada da cognição, e que será utilizado no desenvolvimento deste trabalho.
+
+
+\section{LIDA}
+\label{sec:lida}
+A arquitetura LIDA (\textit{Learning Intelligent Distribution Agent}) foi baseada em IDA (Intelligent Distribution Agent), um agente de software, nas palavras dos autores inteligente, autônomo e ``consciente'', que auxiliava em tarefas da marinha americana \cite{Franklin2006}. Ela se baseia na teoria sobre a mente e o consciente chamada \textit{Global Workspace}, proposta por \citeonline{Baars1997}, de base simbolista. Segundo \citeonline{Ramamurthy2006} essa teoria
+
+\begin{quotation}
+\textit{
+[...] associates conscious experience with three basic
+constructs: a global workspace, a set of specialized unconscious
+processors, and a set of unconscious contexts
+that serve to select, evoke, and define conscious contents.} \cite{Ramamurthy2006}
+\end{quotation} 
+
+O funcionamento da arquitetura LIDA se resume na execução de ciclos cognitivos, onde o agente deve sensorear o mundo (interno e externo), criar significado baseado na interpretação dos estímulos recebidos, associando-os com processos do ``inconsciente'', e decidir, já no ``consciente'', o que é importante para fazer em seguida.  Tais processos ``inconscientes'' são realizados por redes especializadas chamadas \textit{codelets}. 
+
+Esse ciclo tem nove etapas que passam pela percepção e associação dessas percepções com o estado inconsciente do agente, e o estado emocional do agente é fundamental em cada uma delas. Os autores entendem sentimentos e emoções como um único conceito que compõe o sistema de valores do agente, \textit{e.g.}, qual ação é proveitosa e em qual situação. As necessidades fisiológicas  podem ser vistas, segundo \citeonline{Ramamurthy2006} como reações emocionais positivas à recompensas esperadas.
+
+A arquitetura é composta por três mecanismos de aprendizagem, são eles: episódico, procedural e perceptual. A memória perceptual é a mais básica, composta de \textit{codelets} detectores de características primitivas, indivíduos, categorias ou relações.
+A aprendizagem episódica emerge de eventos que vêm do consciente e codificam informações de "o que, onde e quando". Neste contexto existem dois tipos de memórias episódicas, as de curto prazo, que codificam detalhes do estado sensorial do agente, e as de longo prazo ou declarativas, que podem ser autobiográficas ou memórias semânticas, que armazenam fatos.
+Por fim, memórias procedurais codificam comportamentos em uma estrutura chamada \textit{schema}, que consiste de uma ação, seu contexto e resultado. Comportamentos são escolhidos no ciclo cognitivo baseado em quão bem eles se adéquam ao contexto atual do agente e seu resultado atende algum objetivo ou necessidade do agente \cite{Ramamurthy2006}.
+
+\section{CLARION}
+\label{sec:clarion}
+CLARION (Connectionist Learning with Adaptative Rule Induction On-Line) é uma arquitetura híbrida para a construção de agentes cognitivos. Sua principal característica é a dicotomia entre processos implícitos e explícitos \cite{Sun2016}. Em linhas gerais, processos mentais implícitos são menos acessíveis e mais holísticos, enquanto processos mentais explícitos são acessíveis e substanciais. Essa dicotomia está ligada a outras dicotomias recorrentes nos estudos cognitivos, como a do consciente e inconsciente \cite{Sun2001}.
+
+Um dos fundamentos adotados na construção do modelo é a tríade: cognição, motivação e interação com o ambiente, onde um não se separa do outro. Partindo do princípio de que as motivações do agente são inatas e anteriores à cognição, esta se desenvolve a fim de satisfazer aquelas. Nas palavras do autor: 
+
+\begin{quote}
+ \textit{Cognition bridges the needs and motivations of an agent and its environments (be it physical or social), thereby linking all three in a triad} \cite{Sun2016}
+\end{quote}
+
+Um agente da arquitetura CLARION se divide em 4 subsistemas, O ACS (\textit{Action Centered Subsystem}), O NACS (\textit{Non-Action Centered Subsystem}), o MS (\textit{Motivational Subsystem}) e o MCS (\textit{Meta Cognitive Subsystem}).  Com o objetivo de contemplar a dualidade implícito/explícito, todo mecanismo é formado por componentes de alto nível, que utilizam um sistema de símbolos, e baixo nível, formado por redes neurais, responsáveis respectivamente por armazenar conhecimento explicito e implícito. 
+
+O ACS é responsável por controlar a execução das ações desempenhadas pelo agente, sejam processos mentais ou físicos, baseado em conhecimento procedural. O NACS mantém conhecimento declarativo usado para realizar inferências. O MS mantém um sistema de motivações e objetivos. Por motivação entende-se as necessidades básicas de um agente, \textit{e.g.}, estar com fome, e por objetivo, uma decisão que satisfaça uma necessidade, \textit{e.g.},  encontrar comida. Por fim, o MCS é responsável por coordenar os outros mecanismos, escolhendo uma motivação e um objetivo a ser cumprido, interrompendo a ação que está em execução no momento, estabelecendo os novos parâmetros para o ACS e NACS funcionarem, e regular a motivação mediante a recompensa recebida.
+
+%* Realizou experimentos de aprendizagem de sequencias (\cite{Curran1993}) e os resultados se aproximam dos resultados reais
+
+\section{Arquitetura Artífice}
+\label{sec:artifice}
+
+A arquitetura Artífice foi proposta em seu modelo conceitual por \citeonline{Santos2003}. Sua primeira especificação tinha o objetivo de ser genérica o suficiente para construir agentes inteligentes para qualquer propósito, fundamentando-se na teoria não-objetivista da cognição. Como essa posição filosófica é por demais extensa, não cabe aqui detalhar cada um de seus aspectos, mas é possível dizer em linhas gerais o que o termo significa. A \textbf{teoria não-objetivista} afirma que os sujeitos epistêmicos (aqueles que tem consciência de que sabem) e os objetos do mundo coexistem e estão em constante interação, modificando-se mutuamente. Não obstante, o sujeito não tem conhecimento \textit{a priori} do mundo, mas o conhece a medida que com ele  interage e exibe um comportamento coerente, comportamento esse que dependerá de seu estado interno (dos seus componentes cognitivos, parte do sistema nervoso, e dos não cognitivos, que compõem o restante do seu corpo) mas não é determinado por ele. 
+
+Definido o arcabouço teórico-conceitual e as premissas de uma arquitetura cognitiva e situada, \citeonline{Santos2004} identificam que as interações entre os componentes internos de um ASCS (agente de software cognitivo e situado, mas daqui em diante o termo é substituído por criatura artificial, ou somente criatura, termo atualmente empregado no contexto do projeto) e os componentes do mundo acontecem simultaneamente, e o modelo computacional que, à época, melhor abrigava esse comportamento era o de \textit{threads}.
+
+Baseando-se na versão de \citeonline{Santos2004} que também já usava o mecanismo de troca de estímulos entre componentes como modo de comunicação entre as \textit{threads}, \citeonline{Campos2006} propõe uma versão da arquitetura que engloba o processo cognitivo e emocional. \textbf{Emoções} dentro do contexto da arquitetura são necessidades corpóreas primárias, que possuem um nível de excitação (\textit{\textbf{arousal}}) e tem correlação alta com o desempenho do comportamento da criatura. Por \textbf{eficiência comportamental} entende-se o quão eficiente a criatura é em encontrar comida ou fugir de alguma ameaça. O \textit{arousal} pode variar de um nível mínimo a um nível máximo, abaixo do mínimo a criatura está em sono profundo e acima do valor máximo ela morre. 
+
+As emoções implementadas por \citeonline{Campos2006} foram  fome e sono,  e também o reflexo de rubor, contemplando portanto três níveis de resposta: pouco elaborado, semi-elaborado e elaborado. O nível de resposta \textbf{não-elaborada} diz respeito sobre as respostas reflexas que a criatura exibe, o \textbf{semi-elaborado} são respostas puramente emocionais que não passam por uma avaliação completa da situação, e a \textbf{elaborada} é de nível superior e passa por uma avaliação emocional-cognitiva. A criatura então vive em um mundo populado por nutrientes, que podem saciar sua fome, totens que podem estimular seu reflexo de rubor, e deve buscar interagir com o seu meio a fim de manter os níveis de \textit{arousal} entre o mínimo e o máximo, ou seja, conservar seu equilíbrio emocional (\textbf{homeostase}). O fenômeno cognitivo emerge dessa regulação do estado interno a fim de manter-se viva por tempo indeterminado.
+
+Outros trabalhos como os de \citeonline{Silva2008} e \citeonline{Mapa2009} contribuíram para o aperfeiçoamento do mecanismo de aprendizagem das criaturas artificiais, adicionando memórias de condicionamento e memórias auto-biográficas. Simulações computacionais propostas pelos autores mostraram que ambos os mecanismos são fundamentais para a adaptação da criatura artificial ao mundo. 
+
+\section{Considerações Finais}
+As três últimas seções apresentaram três abordagens diferentes para modelar o processo cognitivo. A primeira, implementada na arquitetura LIDA, baseia-se em um modelo psicológico da mente, ignorando, a princípio qualquer particularidade do corpo ou do mundo em que o agente vive. A segunda, apresentada na \autoref{sec:clarion}, se baseia fortemente na dualidade implícito/explicito da mente, levando em conta um sistema de motivações que guiam as ações, mas também não considera que o agente tenha um corpo, restrições sensórias, motoras, ou que haja algum tipo de indeterminismo em suas ações. Ademais, essas arquiteturas não foram concebidas para operarem como MAS de agentes "inteligentes", mas sim para funcionarem  como um único agente.
+
+Na arquitetura Artífice, por sua vez, um agente cognitivo, ou, uma criatura, é considerado um construto único, formado de um sistema cognitivo, sistemas sensórios e motores e outros sistemas auxiliares que formam seu corpo. Essa construção, juntamente com as diferentes situações que ele pode enfrentar ao longo da sua história de interações com o mundo, determina as possibilidades de ação que a criatura pode desempenhar. Os eventos durante a simulação acontecem de maneira assíncrona, e não determinam diretamente qual a atuação da criatura. Ela não possui nenhum mecanismo central de controle, funcionando de maneira independente. O software foi construído utilizando o modelo de programação concorrente baseado em \textit{threads}, e permite que várias criaturas co-existam em uma mesma simulação. 
+
+Apesar da possibilidade de simular mais de uma criatura ao mesmo tempo na arquitetura Artífice, esse número é limitado pelos recursos computacionais de uma única máquina. Assim, o objetivo deste trabalho é contornar essa limitação, implementando uma nova arquitetura, baseado no mesmo modelo que inspira o Artífice, utilizando mecanismos de concorrência voltados para programação distribuída, e executar simulações de forrageamento para validar a nova implementação. Dito isto, o próximo capítulo apresenta a metodologia utilizada para desenvolver e testar a implementação da arquitetura utilizando o modelo de atores, e descreve as particularidades da mesma.

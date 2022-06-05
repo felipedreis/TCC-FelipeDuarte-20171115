@@ -1,0 +1,31 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./01-elementos-pre-textuais/resumoPt.tex
+% -----------------------------------------------------------------------------
+
+
+
+\begin{resumo}
+
+Sistemas multi-agente (MAS) são frequentemente empregados na modelagem e simulação de sistemas ecológicos e biológicos. Uma das aplicações é na simulação de vida artificial, onde uma criatura com sistema nervoso deve explorar um mundo desconhecido e aprender como sobreviver a partir das suas interações com o mundo. Trata-se, pois, de simular computacionalmente um sistema dinâmico, o que exige assincronia dos eventos. Esta exigência revela-se incompatível com o modelo clássico de concorrência que utiliza memória compartilhada, no qual o controle de concorrência é síncrono. Para resolver essa incompatibilidade neste trabalho, utilizamos o modelo de concorrência assíncrona baseado em atores para implementar uma simulação de forrageamento de criaturas artificiais com sistema nervoso assíncrono. Na implementação, foi utilizado o \textit{toolkit} Akka, desenvolvido em Java para implementar o mundo e a criatura artificial. Cada circuito de estimulação do sistema nervoso foi implementado e testado separadamente. Um conjunto de experimentos foram realizados visando validar e verificar o correto funcionamento do modelo proposto. Os resultados se mostraram qualitativamente comparáveis e quantitativamente congruentes com a versão anterior da simulação no caso de uma única criatura. O que nos permite considerar validado e verificado o modelo de simulador baseado no modelo de atores. Outros experimentos foram realizados visando explorar preliminarmente aspectos de escalabilidade horizontal e vertical do simulador. 
+
+\begin{comment}
+ contexto: simulação de sistemas ecológicos utilizando MAS
+ motivação: simular sistemas complexos e de larga escala com plausabilidade biológica
+ justificativa: assincronia intrínseca deste tipo de modelo é incompatível com os modelos de programação utilizando memória compartilhada
+ objetivo: implementar um simulador escalável utilizando o modelo de atores, bem como um sistema nervoso assíncrono
+ metodologia: usar o toolkit akka implementado na linguagem Java para construir o mundo e a criatura artificial, testar os circuitos de estimulação da dinâmica interna, verificar e validar o modela via simulação de forrageamento
+ resultado: Escalabilidade. Espera-se fazer as simulações em larga escala e com os resultados compatíveis com a literatura
+\end{comment}
+
+
+\textbf{Palavras-chave}: Sistemas Multi-Agentes. Arquiteturas cognitivas. Modelo de atores.
+ 
+
+\end{resumo}
+
+
+
+% -----------------------------------------------------------------------------
+%   Escolha de 3 a 6 palavras ou termos que descrevam bem o seu trabalho. As palavras-chaves são utilizadas para indexação.
+%   A letra inicial de cada palavra deve estar em maiúsculas. As palavras-chave são separadas por ponto.
+% -----------------------------------------------------------------------------

@@ -1,0 +1,30 @@
+% -----------------------------------------------------------------------------
+%   Arquivo: ./02-elementos-textuais/conclusao.tex
+% -----------------------------------------------------------------------------
+
+
+
+\chapter{Conclusão}
+\label{chap:conclusao}
+
+A proposta deste trabalho foi propor o modelo e a implementação de um simulador de vida artificial distribuído e assíncrono utilizando o modelo de atores como ferramenta construtitva. Como foi discutido na \autoref{chap:introducao}, há relevância em prover uma arquitetura deste perfil visto que é interessante estudar a modelagem de sistemas biológico em larga escala,  e as técnicas usadas frequentemente na literatura, como concorrência por \textit{threads}, são impeditivas para essa linha de pesquisa.
+
+O modelo de programação concorrente baseado em \textit{threads} e memória compartilhada, perece de problemas de sincronização, como condições de corrida, \textit{deadlocks} e \textit{livelocks}, mas é possível evitá-los com o uso correto de \textit{locks} com perda na performance. O modelo de atores abre mão da possibilidade de compartilhamento de memória e adota um comportamento estritamente assíncrono, baseado em troca de mensagens. Essa decisão construtiva evita esses problemas de sincronização.A implementação do modelo de atores mais desenvolvida atualmente é o \textit{Akka}, e por issos foi adotada neste trabalho. 
+
+Especialmente na área de simulação de processos biológicos, principalmente do processo cognitivo, não existem muitos projetos que pensem a modelagem em termos de sistemas distribuídos e assíncronos. O projeto Artífice, uma arquitetura para construção de criaturas artificiais dotadas de sistema nervoso, é um dos poucos que parte do princípio que.
+
+Experimentos prelimminares foram executados para avaliar a conformidade qualitativa da arquitetura proposta com a Artífice, tal como a escalabilidade vertical e horizontal do sistema. Os resultados mostraram que, a princípio ambas as arquiteturas são qualitativamente comparáveis. Contudo o projeto DL2L ainda carece de refinamentos, isso pois a tarefa de detecção de colisões parece ficar sobrecarregada quando o número de criaturas aumenta numa taxa pequena. Como trabalhos futuros propõe-se estudar outras maneiras de verificar a colisão em um ambiente distribuído de modo a evitar o aumento  da latência a medida que o sistema cresce. Possibilidades que podem ser exploradas a resolver esse problema: checar colisões de mais entidades ao mesmo tempo e responder todas de uma vez, evitando o aumento da quantidade de mensagens enviadas; permitir ao ator que verifica as colisões de criar outros atores que possam assumir a tarefa, aproveitando o paralelismo da máquina; alterar o esquema de alocação das entidades entre os holders, de modo que seja possível, dada a posição da criatura, descobrir em tempo constante quais holders tem entidades próxima a essa região. 
+
+
+
+%\section{Considerações Finais}
+%\label{sec:consideracoesFinais}
+
+%As derradeiras palavras para encerramento do seu trabalho acadêmico.
+
+
+
+% -----------------------------------------------------------------------------
+%   OBS: a norma ABNT estabelece que em qualquer tipo de trabalho acadêmico monográfico
+%   deve haver um capítulo de conclusão
+% -----------------------------------------------------------------------------
